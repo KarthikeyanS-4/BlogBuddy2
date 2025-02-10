@@ -1,40 +1,22 @@
-const express = require("express");
-const multer = require("multer");
 const Blog = require("../model/blog");
 
-const router = express.Router();
+const addBlog = async (req, res) => {
+    const { title, content, author_name, url } = req.body;
 
-// Configure multer to handle file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// Route to create a new blog post without using req.body
-router.post("/add", upload.single("image"), async (req, res) => {
     try {
-        // Extract form data from req.query
-        const title = req.query.title;
-        const author_name = req.query.author;
-        const content = req.query.content;
-        const imageBuffer = req.file ? req.file.buffer : null; // Get image file
-
-        console.log("Received Data:", { title, author_name, content, image: imageBuffer });
-
-        // Save to database
-        const newBlogPost = await Blog.create({
-            title,
-            author_name,
-            content,
-            image: imageBuffer,
+        const blog = new Blog({
+            title: title,
+            author_name: author_name,
+            content: content,
+            url: url
         });
 
-        res.json({
-            message: "Post created successfully",
-            post: newBlogPost,
-        });
+        await blog.save();
+        res.status(201).json({ message: "Blog created successfully", blog });
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ message: "Error creating post", error: error.message });
+        console.error('Error creating blog:', error);
+        res.status(500).json({ message: "Internal server error" });
     }
-});
+};
 
-module.exports = router;
+module.exports = addBlog;

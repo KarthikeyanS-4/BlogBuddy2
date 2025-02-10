@@ -16,7 +16,7 @@ const Blogs = () => {
             }
         };
         fetchData();
-    },); 
+    },[data]); 
 
     const handleBlogClick = (index) => {
         navigate(`/blog/${index}`);
@@ -25,8 +25,7 @@ const Blogs = () => {
     const onDeleted = async (id) => {
         try {
             await axios.delete(`/delete/${id}`);
-            const res = await axios.get('/display');
-            // setData(res.data);
+            navigate('/');
         } catch (error) {
             console.error(error);
         }
@@ -39,10 +38,10 @@ const Blogs = () => {
                     <p className='text-2xl w-full text-center'>No blogs added yet.</p>
                 ) : (
                     <div className='grid m-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                        {data.map((item, index) => (
+                        {data.map((item) => (
                             <div key={item.id} className='p-3 border-2 rounded-lg cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:border-gray-500'>
-                                <img src={`data:image/*;base64,${item.image}`} alt="Blog" className='h-40 w-full object-cover mb-4' onClick={() => handleBlogClick(item.id)} />
-                                <div onClick={() => handleBlogClick(index)}>
+                                {item.url && <img src={item.url} alt="Blog" className='h-40 w-full object-cover mb-4' onClick={() => handleBlogClick(item.id)} />}
+                                <div onClick={() => handleBlogClick(item.id)}>
                                     <p className='font-bold text-2xl mb-2 text-gray-500 uppercase'>{item.title}</p>
                                     <p className='text-gray-600'>{item.content.substring(0, 100)}...</p>
                                 </div>

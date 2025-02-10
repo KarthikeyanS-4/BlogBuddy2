@@ -11,8 +11,8 @@ const Blog = sequelize.define('blog', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    image : {
-        type: DataTypes.BLOB,
+    url : {
+        type: DataTypes.STRING,
         allowNull: true
     },
     content: {
@@ -27,16 +27,6 @@ const Blog = sequelize.define('blog', {
 }, {
     timestamps: false
 });
-
-// Blog.prototype.getFullContent = function() {
-//     return {
-//         title: this.title,
-//         author: this.author_name,
-//         image: this.image,
-//         content: this.content,
-//         likes: this.likes
-//     };
-// };
 
 Blog.sync();
 
