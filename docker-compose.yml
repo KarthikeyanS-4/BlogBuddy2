@@ -1,0 +1,44 @@
+
+services:
+  # Front-end service (e.g., React, Angular, etc.)
+  front-end:
+    build:
+      context: ./front-end  # Path to the front-end Dockerfile
+      dockerfile: Dockerfile # Optional: only needed if the Dockerfile has a different name
+    container_name: front-end
+    ports:
+      - "4173:4173"  # Adjust port as needed
+    environment:
+      - REACT_APP_API_URL=http://back-end:3000  # API URL for backend connection
+    depends_on:
+      - back-end
+ 
+  # Back-end service (e.g., Node.js, Python, etc.)
+  back-end:
+    build:
+      context: ./back-end  # Path to the back-end Dockerfile
+      dockerfile: Dockerfile # Optional: only needed if the Dockerfile has a different name
+    container_name: back-end
+    ports:
+      - "3000:3000"  # Adjust port as needed
+    environment:
+      - DATABASE_URL=postgres://postgres:kaen@db:5432/postgres  # Connection string for Postgres
+    depends_on:
+      - db
+ 
+  # PostgreSQL database service
+  db:
+    image: postgres:13
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kaen
+      POSTGRES_DB: postgres
+    ports:
+    - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistent data storage
+ 
+# Define a named volume for PostgreSQL data persistence
+volumes:
+  postgres_data:
